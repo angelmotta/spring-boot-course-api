@@ -1,6 +1,8 @@
 package io.angelinux.CourseApi.topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +19,12 @@ public class TopicController {
     }
 
     @RequestMapping("/topic/{id}")
-    public Optional<Topic> getTopic(@PathVariable String id) {
-        return topicService.getTopic(id);
+    public ResponseEntity<Topic> getTopic(@PathVariable String id) {
+        Optional<Topic> topicResponse = topicService.getTopic(id);
+        if (topicResponse.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(topicResponse.get());
     }
 
     @PostMapping(path = "/topics", consumes = "application/json")
